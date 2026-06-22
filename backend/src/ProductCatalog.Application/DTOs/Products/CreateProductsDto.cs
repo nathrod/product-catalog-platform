@@ -9,13 +9,9 @@ namespace ProductCatalog.Application.DTOs.Products
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public ProductCategory Category { get; set; } // e se vim nulo, não podemos já deixar setado para um valo padrão. ProductCategory.NoCategorized
+        public ProductCategory Category { get; set; }
         public decimal Price { get; set; }
         public bool IsActive { get; set; } = true;
         public ProductPriority Priority { get; set; }
-
-        //E esse CreatedAt, uso como?
-
-        //IsActive ao criar por padrão será setado para ativo, um Radio Group 
     }
 }

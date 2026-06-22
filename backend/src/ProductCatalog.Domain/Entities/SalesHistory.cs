@@ -19,9 +19,3 @@ namespace ProductCatalog.Domain.Entities
         public decimal TotalSaleAmount { get; set; }
     }
 }
-
-
-//Cada linha na tabela sales_history representa uma venda
-//cada produto possui o seu histórico de vendas associdado
-//3A sales history vinculado ao id do Produto, dizendo que naquela venda vendi 3 produtos A 
-//cada venda vai criar uma entrada na tabela sales_history

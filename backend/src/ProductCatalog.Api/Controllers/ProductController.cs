@@ -41,22 +41,39 @@ namespace ProductCatalog.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] CreateProductDto dto)
         {
-            var createProduct = await _productService.AddProductAsync(dto);
+            try
+            {
+                var createProduct = await _productService.AddProductAsync(dto);
 
-            return CreatedAtAction(
-                "GetProductById",
-                new { id = createProduct.Id },
-                createProduct
-            );
-            // return Ok(createProduct);
+                return CreatedAtAction(
+                    "GetProductById",
+                    new { id = createProduct.Id },
+                    createProduct
+                );
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]
         public async Task<ActionResult<ProductDto>> UpdateProduct([FromBody] ProductDto dto)
         {
-            var updatedProduct = await _productService.EditProductAsync(dto);
+            try
+            {
+                var updatedProduct = await _productService.EditProductAsync(dto);
 
-            return Ok(updatedProduct);
+                return Ok(updatedProduct);
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message); 
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]

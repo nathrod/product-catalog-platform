@@ -3,12 +3,8 @@ namespace ProductCatalog.Application.DTOs.Sales
     /// <summary>
     /// 
     /// </summary>
-    public class SalesDataDto
+    public class CreateSalesDto
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public Guid Id { get; set; }
         /// <summary>
         /// 
         /// </summary>

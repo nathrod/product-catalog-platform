@@ -26,12 +26,7 @@ namespace ProductCatalog.Application.DTOs.Queries
             }
         }
 
-        //Condition to filter nullable, initialized to empty list to avoid null refrences map to SqlSugar for database filtering 
-
         public List<FilterDto>? Filters { get; set; } = [];
-
-        //converted sqlsugar IcontionalModal list derived from Condtionals, used directly by SQLSugar for WHERE clause generation
-
         public List<IConditionalModel> Where
         {
             get
@@ -44,7 +39,6 @@ namespace ProductCatalog.Application.DTOs.Queries
 
                 foreach (var filter in Filters)
                 {
-                    //Skip invalid Filters missing FieldName to prevent SqlSugar errors
                     if (string.IsNullOrWhiteSpace(filter.FieldName))
                     {
                         continue;
@@ -60,24 +54,18 @@ namespace ProductCatalog.Application.DTOs.Queries
                 return data;
             }
         }
-
-        //Sorting rules initialized to empty list to avoid null references. Contains field name and direction for SqlSugar ORDER BY clause
         public List<SortDto>? Sorts { get; set; } = [];
 
         private string orderBy = string.Empty;
-
-        //Formatted ORDER BY string, Id desc, Name asc will clear Orders if set value
         public string OrderBy
         {
             get
             {
-                //null safe formatting, return empty string if no valid sort rules
                 if (Sorts == null | !Sorts.Any())
                 {
                     return orderBy;
                 }
 
-                //filter out invalid sort rules missing OrderField
                 var validSorts = Sorts.Where(o => !string.IsNullOrWhiteSpace(o.FieldName)).ToList();
                 if (!validSorts.Any())
                 {

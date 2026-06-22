@@ -27,7 +27,7 @@ namespace ProductCatalog.Domain.Entities
         public decimal Price { get; set; }
 
         [SugarColumn(IsNullable = false)]
-        public bool IsActive { get; set; } //o Frontend saber se deve mostrar o botão "Comprar" ou o texto "Produto Esgotado" when user see the get by id page. On the forms this will be a radio button active disabled
+        public bool IsActive { get; set; }
 
         [SugarColumn(IsNullable = false)]
         public ProductPriority Priority { get; set; }
@@ -37,8 +37,5 @@ namespace ProductCatalog.Domain.Entities
         public decimal Rating { get; set; }
 
         public int ReviewCount { get; set; }
-
-        // [SugarColumn(IsNullable = false)]
-        // public DateTime CreatedAt { get; set; }
     }
 }

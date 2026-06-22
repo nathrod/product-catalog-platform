@@ -15,14 +15,12 @@ namespace ProductCatalog.Application.Services
     public class ProductService(ISqlSugarClient db) : IProductService
     {
         private readonly ISqlSugarClient _db = db;
-
         private async Task ValidateRequiredFields(Product product)
         {
             var productCodeExists = await _db.Queryable<Product>().AnyAsync(p => p.Code == product.Code && p.Id != product.Id);
             if (productCodeExists)
             {
-                // throw new CustomException(PostgresErrorCodes.)
-                Console.WriteLine("Code already exist!");
+                throw new ArgumentException("Code already exist!");
             }
         }
 
@@ -32,9 +30,7 @@ namespace ProductCatalog.Application.Services
         /// <param name="dto"></param>
         /// <returns></returns>
         public async Task<PageListResultDto<ProductDto>> GetListAsync(QueryConditionDto dto)
-        {
-            RefAsync<int> total = 0;
-            
+        {   
             List<Product> pagedProducts = await _db.Queryable<Product>()
                 .Where(dto.Where)
                 .OrderBy(dto.OrderBy)
@@ -44,7 +40,7 @@ namespace ProductCatalog.Application.Services
             
             return new PageListResultDto<ProductDto>()
             {
-                Total = total,
+                Total = itemsDto.Count,
                 PageSize = dto.PageSize,
                 PageIndex = dto.PageIndex,
                 Items = itemsDto,
@@ -77,6 +73,7 @@ namespace ProductCatalog.Application.Services
             newProduct.Id = newId;
             
             await ValidateRequiredFields(newProduct);
+
             await _db.Insertable(newProduct).ExecuteCommandAsync();
 
             return newProduct.Adapt<ProductDto>();
@@ -89,12 +86,15 @@ namespace ProductCatalog.Application.Services
         /// <returns></returns>
         public async Task<ProductDto> EditProductAsync(ProductDto dto)
         {
-            var editProduct = dto.Adapt<Product>();
-            await ValidateRequiredFields(editProduct);
+            var productExists = await _db.Queryable<Product>().InSingleAsync(dto.Id) ?? throw new KeyNotFoundException("Product not found!");
 
-            await _db.Updateable(editProduct).ExecuteCommandAsync();
+            dto.Adapt(productExists);
 
-            return editProduct.Adapt<ProductDto>();
+            await ValidateRequiredFields(productExists);
+
+            await _db.Updateable(productExists).ExecuteCommandAsync();
+
+            return productExists.Adapt<ProductDto>();
         }
 
         /// <summary>

@@ -12,6 +12,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ISalesHistoryInterface, SalesHistoryService>();
+builder.Services.AddScoped<ICSVService, CSVService>();
 
 var app = builder.Build();
 
@@ -31,14 +33,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-
-
-// // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.MapOpenApi();
-// }
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.MapControllers();
 
