@@ -12,7 +12,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ISalesHistoryInterface, SalesHistoryService>();
+builder.Services.AddScoped<ISaleHistoryInterface, SaleHistoryService>();
 builder.Services.AddScoped<ICSVService, CSVService>();
 
 var app = builder.Build();
@@ -21,7 +21,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ISqlSugarClient>();
 
-    db.CodeFirst.InitTables<Product, SalesHistory>();
+    db.CodeFirst.InitTables<Product, SaleHistory>();
 }
 
 if (app.Environment.IsDevelopment())
