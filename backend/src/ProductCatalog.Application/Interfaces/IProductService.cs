@@ -1,6 +1,6 @@
 using ProductCatalog.Application.DTOs;
-using ProductCatalog.Application.DTOs.Products;
-using ProductCatalog.Application.DTOs.Queries;
+using ProductCatalog.Application.DTOs.Product;
+using ProductCatalog.Application.DTOs.Query;
 
 namespace ProductCatalog.Application.Interfaces
 {

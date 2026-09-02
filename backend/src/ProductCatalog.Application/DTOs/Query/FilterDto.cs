@@ -1,6 +1,6 @@
 using SqlSugar;
 
-namespace ProductCatalog.Application.DTOs.Queries
+namespace ProductCatalog.Application.DTOs.Query
 {
     public class FilterDto : IConditionalModel
     {

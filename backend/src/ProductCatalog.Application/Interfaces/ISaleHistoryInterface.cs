@@ -1,13 +1,13 @@
 using ProductCatalog.Application.DTOs;
-using ProductCatalog.Application.DTOs.Queries;
-using ProductCatalog.Application.DTOs.Sales;
+using ProductCatalog.Application.DTOs.Query;
+using ProductCatalog.Application.DTOs.Sale;
 
 namespace ProductCatalog.Application.Interfaces
 {
     /// <summary>
-    /// 
+    /// Explica regra de negócio e contratos
     /// </summary>
-    public interface ISalesHistoryInterface
+    public interface ISaleHistoryInterface
     {
         /// <summary>
         /// 
@@ -15,13 +15,13 @@ namespace ProductCatalog.Application.Interfaces
         /// <param name="dto"></param>
         /// <param name="productId"></param>
         /// <returns></returns>
-        Task<PageListResultDto<SalesDataDto>> GetListAsync(QueryConditionDto dto, Guid productId);
+        Task<PageListResultDto<SaleDataDto>> GetListAsync(QueryConditionDto dto, Guid productId);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<SalesDataDto> AddSalesAsync(CreateSalesDto dto);
+        Task<SaleDataDto> AddSalesAsync(CreateSaleDto dto);
         /// <summary>
         /// 
         /// </summary>

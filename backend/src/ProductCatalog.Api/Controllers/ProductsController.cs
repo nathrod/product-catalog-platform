@@ -10,7 +10,7 @@ namespace ProductCatalog.Api.Controllers
     /// Provides endpoints for managing the products
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productsService;
@@ -26,9 +26,10 @@ namespace ProductCatalog.Api.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<ActionResult<PageListResultDto<ProductDto>>> GetProductList([FromQuery] QueryConditionDto dto)
+        [HttpPost("search")]
+        public async Task<ActionResult<PageListResultDto<ProductDto>>> GetProductList([FromBody] QueryConditionDto dto)
         {
+            
             var data = await _productsService.GetListAsync(dto);
             return Ok(data);
         }

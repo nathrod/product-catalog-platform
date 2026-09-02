@@ -1,4 +1,4 @@
-namespace ProductCatalog.Application.DTOs.Products
+namespace ProductCatalog.Application.DTOs.Product
 {
     public class ProductDetailsDto
     {

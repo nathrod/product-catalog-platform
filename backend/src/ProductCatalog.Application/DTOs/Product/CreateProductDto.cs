@@ -1,16 +1,15 @@
 using ProductCatalog.Domain.Enums;
 
-namespace ProductCatalog.Application.DTOs.Products
+namespace ProductCatalog.Application.DTOs.Product
 {
-    public class ProductDto
+    public class CreateProductDto
     {
-        public Guid Id { get; set; }
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; } 
+        public string Description { get; set; } = string.Empty;
         public ProductCategory Category { get; set; }
         public decimal Price { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public ProductPriority Priority { get; set; }
     }
 }

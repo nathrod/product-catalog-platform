@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProductCatalog.Application.DTOs;
 using ProductCatalog.Application.DTOs.Query;
 using ProductCatalog.Application.DTOs.Sale;
 using ProductCatalog.Application.Interfaces;
@@ -10,7 +11,7 @@ namespace ProductCatalog.Api.Controllers
     /// allowing for the consultation, registration, and import of sales via CSV file
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class SalesController : ControllerBase
     {
         private readonly ISaleHistoryInterface _salesService;
@@ -27,7 +28,7 @@ namespace ProductCatalog.Api.Controllers
         /// <param name="productId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<SaleDataDto>> GetSalesProductList ([FromQuery] QueryConditionDto dto, Guid productId)
+        public async Task<ActionResult<PageListResultDto<SaleDataDto>>> GetSalesProductList ([FromQuery] QueryConditionDto dto, Guid productId)
         {
             var data = await _salesService.GetListAsync(dto, productId);
             return Ok(data);
@@ -59,7 +60,7 @@ namespace ProductCatalog.Api.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost("import-csv/{productId}")]
-        public async Task<IActionResult> ImportSalesFromCsv(Guid productId, IFormFile file)
+        public async Task<ActionResult<int>> ImportSalesFromCsv(Guid productId, IFormFile file)
         {
             if(file == null || file.Length == 0)
                 return BadRequest();
@@ -68,10 +69,11 @@ namespace ProductCatalog.Api.Controllers
                 return BadRequest();
             
             using var stream = file.OpenReadStream();
+
             try
             {
                 var result = await _salesService.ProcessSalesCsvAsync(productId, stream);
-                return Ok(new { Message = "Vendas importadas com sucesso!", Quantidade = result });
+                return Ok(result);
             }
             catch(ArgumentException ex)
             {

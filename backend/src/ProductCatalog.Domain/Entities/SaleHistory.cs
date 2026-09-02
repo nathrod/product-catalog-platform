@@ -3,7 +3,7 @@ using SqlSugar;
 namespace ProductCatalog.Domain.Entities
 {
     [SugarTable("product_sales")]
-    public class SalesHistory
+    public class SaleHistory
     {
         [SugarColumn(IsPrimaryKey = true)]
         public Guid Id { get; set; }

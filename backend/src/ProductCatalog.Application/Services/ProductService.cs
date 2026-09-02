@@ -3,8 +3,8 @@ using ProductCatalog.Domain.Entities;
 using SqlSugar;
 using Mapster;
 using ProductCatalog.Application.DTOs;
-using ProductCatalog.Application.DTOs.Products;
-using ProductCatalog.Application.DTOs.Queries;
+using ProductCatalog.Application.DTOs.Product;
+using ProductCatalog.Application.DTOs.Query;
 
 namespace ProductCatalog.Application.Services
 {
@@ -31,16 +31,53 @@ namespace ProductCatalog.Application.Services
         /// <returns></returns>
         public async Task<PageListResultDto<ProductDto>> GetListAsync(QueryConditionDto dto)
         {   
-            List<Product> pagedProducts = await _db.Queryable<Product>()
-                .Where(dto.Where)
-                .OrderBy(dto.OrderBy)
-                .ToPageListAsync(dto.PageIndex, dto.PageSize);
+            RefAsync<int> totalCount = 0;
+
+            var query = _db.Queryable<Product>();
+            foreach (var sort in dto.Sorts)
+            {
+                switch (sort.FieldName.ToLower())
+                {
+                    case "price":
+                        query = sort.Descending
+                            ? query.OrderBy(p => p.Price, OrderByType.Desc)
+                            : query.OrderBy(p => p.Price, OrderByType.Asc);
+                        break;
+                    case "name":
+                        query = sort.Descending
+                            ? query.OrderBy(p => p.Name, OrderByType.Desc)
+                            : query.OrderBy(p => p.Name, OrderByType.Asc);
+                        break;
+                    case "code":
+                        query = sort.Descending
+                            ? query.OrderBy(p => p.Code, OrderByType.Desc)
+                            : query.OrderBy(p => p.Code, OrderByType.Asc);
+                        break;
+                    case "priority":
+                        query = sort.Descending
+                            ? query.OrderBy(p => p.Priority, OrderByType.Desc)
+                            : query.OrderBy(p => p.Priority, OrderByType.Asc);
+                        break;
+                    case "category":
+                        query = sort.Descending
+                            ? query.OrderBy(p => p.Category, OrderByType.Desc)
+                            : query.OrderBy(p => p.Category, OrderByType.Asc);
+                        break;
+                }
+            }
+
+            List<Product> pagedProducts = await query.ToPageListAsync(dto.PageIndex, dto.PageSize, totalCount);
+
+            // List<Product> pagedProducts = await _db.Queryable<Product>()
+            //     // .Where(dto.Where)
+            //     // .OrderBy(dto.OrderBy)
+            //     .ToPageListAsync(dto.PageIndex, dto.PageSize, totalCount);
             
             List<ProductDto> itemsDto = pagedProducts.Adapt<List<ProductDto>>();
             
             return new PageListResultDto<ProductDto>()
             {
-                Total = itemsDto.Count,
+                Total = totalCount,
                 PageSize = dto.PageSize,
                 PageIndex = dto.PageIndex,
                 Items = itemsDto,

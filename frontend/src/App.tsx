@@ -1,12 +1,16 @@
-import { Button } from 'antd'
+import { Routes, Route } from 'react-router-dom'
+import ProductListPage from './pages/Products/ProductListPage'
+import ThemeProvider from './theme'
 
 function App() {
   return (
-    <div className="flex h-screen items-center justify-center">
-      <Button type="primary">
-        Ant Design Funcionando
-      </Button>
+    <ThemeProvider>
+    <div>
+      <Routes>
+        <Route path="/" element={<ProductListPage />} />
+      </Routes>
     </div>
+    </ThemeProvider>
   )
 }
 

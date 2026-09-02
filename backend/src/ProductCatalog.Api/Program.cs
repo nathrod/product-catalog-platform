@@ -4,6 +4,8 @@ using ProductCatalog.Domain.Entities;
 using ProductCatalog.Infrastructure;
 using SqlSugar;
 
+var AllowFrontendConnection = "_allowFrontendConnection";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // // Add services to the container.
@@ -14,6 +16,22 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ISaleHistoryInterface, SaleHistoryService>();
 builder.Services.AddScoped<ICSVService, CSVService>();
+
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowFrontendConnection,
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -34,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(AllowFrontendConnection);
 
 app.MapControllers();
 
