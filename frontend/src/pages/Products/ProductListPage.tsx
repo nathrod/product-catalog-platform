@@ -1,7 +1,17 @@
-import { Button } from "antd";
-import ProductTable from "./components/ProductTable";
+import { useState } from 'react'
+import { Button } from "antd"
+import { PlusOutlined } from '@ant-design/icons'
+import ProductTable from "./components/ProductTable"
+import ProductDrawer from './components/ProductDrawer'
 
 export default function ProductListPage() {
+    const [drawerOpen, setDrawerOpen] = useState(false)
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    const handleProductCreated = () => {
+        setRefreshKey((current) => current + 1);
+    };
+
     return (
         <div className="flex h-full min-h-0 flex-col"> 
             <div className="mb-4 grid grid-cols-3 items-center">
@@ -10,45 +20,21 @@ export default function ProductListPage() {
                 </h1>
 
                 <div className="flex justify-center">
-                    <Button type="primary">
-                    Add New Product
+                    <Button type="primary" onClick={() => setDrawerOpen(true)} icon={<PlusOutlined />}>
+                        Add New Product
                     </Button>
                 </div>
             </div>
 
             <div className="min-h-0 flex-1">
-                <ProductTable />
+                <ProductTable refreshKey={refreshKey} />
             </div>
+
+            <ProductDrawer
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                onCreated={handleProductCreated}
+            />
         </div>
     );
 }
-
-// const [products, setProducts] = useState<Product[]>([]);
-    // const [loading, setLoading] = useState(true);
-    
-    // const [query, setQuery] = useState<QueryCondition>({
-    //     pageSize: 10,
-    //     pageIndex: 1,
-    // });
-
-    // useEffect(() => {
-    //     const loadProducts = async () => {
-    //         try{
-    //             const result = await ProductService.getAll(query);
-    //             setProducts(result.items);
-    //         } catch (error) {
-    //             console.error('Error loading products:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     loadProducts();
-    // }, [query]);
-
-    // const handlePageChange = (page: number) => {
-    //     setQuery({
-    //         ...query,
-    //         pageIndex: page,
-    //     });
-    // };

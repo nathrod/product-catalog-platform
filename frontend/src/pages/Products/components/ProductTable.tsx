@@ -6,8 +6,15 @@ import { Table } from "antd";
 import FilterBar from "@/components/FilterBar";
 import ProductFilters, {type ProductFilterValues} from "./ProductFilter";
 import type { Filter } from "@/types/query/filter.types";
+import { ProductCategoryLabels } from "@/constants/enum";
 
-export default function ProductTable() {
+type ProductTableProps = {
+    refreshKey: number;
+};
+
+export default function ProductTable({
+    refreshKey,
+}: ProductTableProps) {
 
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
@@ -32,7 +39,7 @@ export default function ProductTable() {
             }
         };
         loadProducts();
-    }, [query]);
+    }, [query, refreshKey]);
     
     const columns = [
         {
@@ -57,7 +64,11 @@ export default function ProductTable() {
             key: '4',
             title: 'Category',
             dataIndex: 'category', 
+            //added
             sorter: true,
+            render: (category: Product["category"]) => (
+                <span>{ProductCategoryLabels[category]}</span>
+            ),
         },
         {
             key: '5',

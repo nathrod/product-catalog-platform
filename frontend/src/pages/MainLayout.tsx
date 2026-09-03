@@ -4,6 +4,7 @@ import {
     HomeOutlined, 
     ShoppingOutlined, 
     AppstoreOutlined,
+    ShoppingCartOutlined,
 } from '@ant-design/icons';
 import { Outlet } from 'react-router-dom'
 
@@ -41,6 +42,11 @@ const MainLayout: React.FC = () => {
                         key: 'categories',
                         icon: <AppstoreOutlined />,
                         label: 'Categories',
+                    },
+                    {
+                        key: 'sales',
+                        icon: <ShoppingCartOutlined />,
+                        label: 'Sales',
                     },
                 ]}
                 />

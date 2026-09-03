@@ -1,6 +1,6 @@
 import { Button, Input, InputNumber, Select } from "antd";
 import { useState } from "react";
-import { ProductCategoryValues } from "@/constants/enum";
+import { ProductCategoryLabels } from "@/constants/enum";
 
 export type ProductFilterValues = {
     code?: string;
@@ -74,19 +74,10 @@ export default function ProductFilters({
                         category: value,
                     }))
                 }
-                options={[
-                    { value: ProductCategoryValues.Electronics, label: "Electronics" },
-                    { value: ProductCategoryValues.ClothingAndApparel, label: "Clothing" },
-                    { value: ProductCategoryValues.HomeAndGarden, label: "Home and Garden" },
-                    { value: ProductCategoryValues.BooksAndMedia, label: "Books" },
-                    { value: ProductCategoryValues.HealthAndBeauty, label: "Health and Beauty" },
-                    { value: ProductCategoryValues.ToysAndGames, label: "Toys and Games" },
-                    { value: ProductCategoryValues.SportsAndOutdoors, label: "Sports and Outdoors" },
-                    { value: ProductCategoryValues.Automotive, label: "Automotive" },
-                    { value: ProductCategoryValues.GroceryAndFood, label: "Grocery and Food" },
-                    { value: ProductCategoryValues.PetSupplies, label: "Pet Supplies" },
-                    { value: ProductCategoryValues.NoCategorized, label: "No Categorized" },
-                ]}
+                options={Object.entries(ProductCategoryLabels).map(([value, label]) => ({
+                    label,
+                    value: Number(value),
+                }))}
             />
 
             <Select
@@ -106,11 +97,11 @@ export default function ProductFilters({
                 ]}
             />
 
-            <Button type="primary" onClick={() => onFilter(filters)}>
+            <Button type="primary" className="h-8 px-6" onClick={() => onFilter(filters)}>
                 Filter
             </Button>
 
-            <Button onClick={handleClear}>Clear</Button>
+            <Button className="h-8 w-24" onClick={handleClear}>Clear</Button>
         </div>
     );
 }
