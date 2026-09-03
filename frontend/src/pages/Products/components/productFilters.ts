@@ -1,4 +1,4 @@
-import type { FilterField } from '../../../types/query/filter.types';
+import type { FilterField } from '@/types/query/filter.types';
 
 export const productFilters: FilterField[] = [
     {

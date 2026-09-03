@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import type { Product } from "../../../types/products/product.type";
-import type { QueryCondition } from "../../../types/query/queryCondition.type";
-import ProductService from "../../../api/products.service";
+import type { Product } from "@/types/products/product.type";
+import type { QueryCondition } from "@/types/query/queryCondition.type";
+import ProductService from "@/api/products.service";
 import { Table } from "antd";
-import FilterBar from "../../../components/FilterBar";
-import ProductFilters from "./ProductFilter";
+import FilterBar from "@/components/FilterBar";
+import ProductFilters, {type ProductFilterValues} from "./ProductFilter";
+import type { Filter } from "@/types/query/filter.types";
 
 export default function ProductTable() {
 
@@ -74,20 +75,43 @@ export default function ProductTable() {
         },
     ]
 
+    const handleFilter = (values: ProductFilterValues) => {
+        const filters: Filter[] = Object.entries(values)
+            .filter(([_, value]) =>
+                value !== undefined &&
+                value !== null &&
+                value !== ""
+            )
+            .map(([fieldName, fieldValue]) => ({
+                fieldName,
+                fieldValue: String(fieldValue),
+            }));
+
+        setQuery((current) => ({
+            ...current,
+            pageIndex: 1,
+            filters,
+        }));
+    };
+
     return (
-        <div className="p-6">
-            <div className="rounded-lg border border-gray-200 overflow-hidden bg-white [&_.ant-table]:rounded-none [&_.ant-table-container]:rounded-none">
+        <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
+
             <FilterBar>
-                <ProductFilters />
+                <ProductFilters onFilter={handleFilter}/>
             </FilterBar>
 
-            <div className="border-t border-gray-200">
+            <div className="min-h-0 flex-1 border-t border-gray-200">
 
             <Table<Product>
                 rowKey="id"
                 loading={loading}
                 dataSource={products}
                 columns={columns}
+                size="middle"
+                scroll={{
+                    y: 'calc(100vh - 500px)',
+                }}
                 pagination={{
                     current: query.pageIndex,
                     pageSize: query.pageSize,
@@ -110,7 +134,6 @@ export default function ProductTable() {
                     });
                 }}
             />
-                </div>
             </div>
         </div>
     )

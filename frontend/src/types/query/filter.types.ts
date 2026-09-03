@@ -15,3 +15,8 @@ export interface FilterField {
     type: FilterFieldType;
     options?: FilterOption[];
 }
+
+export type Filter = {
+    fieldName: string;
+    fieldValue: string;
+};

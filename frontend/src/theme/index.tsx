@@ -1,6 +1,7 @@
 import React from 'react';
 import { ConfigProvider } from 'antd';
 
+
 const ThemeProvider = ({ children }: {children: React.ReactNode}) => {
     const primaryColorCode = "#102F15" 
     //AEA781

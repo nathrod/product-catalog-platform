@@ -1,4 +1,4 @@
-import type { Filter } from "./filter.type";
+import type { Filter } from "./filter.types.ts";
 import type { Sort } from "./sort.type";
 
 export type QueryCondition = {

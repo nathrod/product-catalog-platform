@@ -1,17 +1,29 @@
-//Home page, the page responsible for listing the products
-// ProductListPage
-
-// import { useEffect, useState } from "react";
-// import type { Product } from "../../types/product.type";
-// import type { QueryCondition } from "../../types/query/queryCondition.type";
-// import ProductService from "../../api/products.service";
-// import { Table } from "antd";
 import { Button } from "antd";
-import { productFilters } from "./components/productFilters";
 import ProductTable from "./components/ProductTable";
 
 export default function ProductListPage() {
-    // const [products, setProducts] = useState<Product[]>([]);
+    return (
+        <div className="flex h-full min-h-0 flex-col"> 
+            <div className="mb-4 grid grid-cols-3 items-center">
+                <h1 className=" text-2xl font-semibold">
+                    Products
+                </h1>
+
+                <div className="flex justify-center">
+                    <Button type="primary">
+                    Add New Product
+                    </Button>
+                </div>
+            </div>
+
+            <div className="min-h-0 flex-1">
+                <ProductTable />
+            </div>
+        </div>
+    );
+}
+
+// const [products, setProducts] = useState<Product[]>([]);
     // const [loading, setLoading] = useState(true);
     
     // const [query, setQuery] = useState<QueryCondition>({
@@ -40,51 +52,3 @@ export default function ProductListPage() {
     //         pageIndex: page,
     //     });
     // };
-
-    return (
-        <div className="p-6"> 
-            <h1 className="mb-4 text 2xl font-semibold">
-                Products
-            </h1>
-
-            <Button type="primary">Add New Product</Button>
-
-            <ProductTable />
-
-            {/* posso passar como props a tabela
-            <Table<Product>
-                rowKey="id"
-                loading={loading}
-                dataSource={products}
-                columns={[
-                    {
-                        title: 'Code',
-                        dataIndex: 'code'
-                    },
-                    {
-                        title: 'Name',
-                        dataIndex: 'name'
-                    },
-                    {
-                        title: 'Price',
-                        dataIndex: 'price'
-                    },
-                    {
-                        title: 'Category',
-                        dataIndex: 'category'
-                    },
-                    {
-                        title: 'Priority',
-                        dataIndex: 'priority'
-                    },
-                    {
-                        title: 'Available',
-                        dataIndex: 'active'
-                    }
-                ]}
-            /> */}
-        </div>
-    );
-}
-
-//Tem uma pagina principal que agarra essas outras paginas, então tem um layout por fora e ai cria as outras paginas meio que dentro
