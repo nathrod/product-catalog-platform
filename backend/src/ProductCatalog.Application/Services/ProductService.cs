@@ -34,6 +34,54 @@ namespace ProductCatalog.Application.Services
             RefAsync<int> totalCount = 0;
 
             var query = _db.Queryable<Product>();
+            
+            foreach (var filter in dto.Filters)
+            {
+                if (string.IsNullOrWhiteSpace(filter.FieldName))
+                {
+                    continue;
+                }
+
+                switch (filter.FieldName.ToLower())
+                {
+                    case "code":
+                        query = query.Where(p=>
+                            p.Code.Contains(filter.FieldValue));
+                        break;
+                    case "name":
+                        query = query.Where(p =>
+                            p.Name.Contains(filter.FieldValue));
+                        break;
+                    case "price":
+                        if (decimal.TryParse(
+                            filter.FieldValue,
+                            out var price))
+                        {
+                            query = query.Where(p =>
+                                p.Price == price);
+                        }
+                        break;
+                    case "category":
+                        if (int.TryParse(
+                            filter.FieldValue,
+                            out var category))
+                        {
+                            query = query.Where(p =>
+                                (int)p.Category == category);
+                        }
+                        break;
+                    case "isactive":
+                        if (bool.TryParse(
+                            filter.FieldValue,
+                            out var isActive))
+                        {
+                            query = query.Where(p =>
+                                p.IsActive == isActive);
+                        }
+                        break;
+                }
+            }
+
             foreach (var sort in dto.Sorts)
             {
                 switch (sort.FieldName.ToLower())
