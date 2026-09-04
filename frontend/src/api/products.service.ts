@@ -4,27 +4,10 @@
 // PUT    /products
 // DELETE /products/ 
 
-// A função deverá:
-
-// Receber um QueryCondition.
-// Fazer GET /products
-// Enviar pageSize, pageIndex, filters, sorts etc.
-// Retornar o resultado tipado.
-
-// import axios from "axios";
-
-// const response = await axios.get(
-//     // baseURL+/api/Products
-//     "http://localhost:5120/api/Products",
-//     {timeout: 5000,}
-// );
-
-// console.log(response.data);
-
-import { api } from '../config/axios'
-import type { PagedResult } from '../types/pageListResult.type';
-import type { CreateProduct, Product } from '../types/products/product.type';
-import type { QueryCondition } from '../types/query/queryCondition.type';
+import { api } from '@/config/axios'
+import type { PagedResult } from '@/types/pageListResult.type';
+import type { CreateProduct, Product } from '@/types/products/product.type';
+import type { QueryCondition } from '@/types/query/queryCondition.type';
 
 export default class ProductService {
     static async getAll(
@@ -39,17 +22,60 @@ export default class ProductService {
         return data;
     }
 
-    static async create(payload: CreateProduct): Promise<Product> {
-        const { data } = await api.post('/products', payload);
+    static async create(
+        payload: CreateProduct,
+        image?: File
+    ): Promise<Product> {
+        const formData = new FormData();
+        
+        formData.append('code', payload.code);
+        formData.append('name', payload.name);
+        formData.append('price', String(payload.price));
+        formData.append('category', String(payload.category));
+        formData.append('priority', String(payload.priority));
+        formData.append('isActive', String(payload.isActive));
+
+        if (payload.description)
+        {
+            formData.append('description', payload.description);
+        }
+
+        if(image)
+        {
+            formData.append('image', image);
+        }
+
+        const { data } = await api.post('/products', formData);
         return data;
     }
 
-    static async update(payload: Product): Promise<Product> {
-        const { data } = await api.put('/products', payload);
+    static async update(
+        payload: Product, 
+        image?: File
+    ): Promise<Product> {
+        const formData = new FormData();
+        
+        formData.append('id', payload.id);
+        formData.append('code', payload.code);
+        formData.append('name', payload.name);
+        formData.append('price', String(payload.price));
+        formData.append('category', String(payload.category));
+        formData.append('priority', String(payload.priority));
+        formData.append('isActive', String(payload.isActive));
+
+        if (payload.description)
+        {
+            formData.append('description', payload.description);
+        }
+
+        if (image) 
+        {
+            formData.append('image', image);
+        }
+        const { data } = await api.put('/products', formData);
         return data;
     }
 
-    //Recebe uma lista de ids do body e retorna NoContent()
     static async delete(ids: string[]): Promise<void> {
         await api.delete('/products', {
             data: ids

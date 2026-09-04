@@ -40,7 +40,7 @@ namespace ProductCatalog.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDetailsDto>> GetProductById(Guid id)
+        public async Task<ActionResult<ProductDto>> GetProductById(Guid id)
         {
             var product = await _productsService.GetProductByIdAsync(id);
 
@@ -59,7 +59,7 @@ namespace ProductCatalog.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] CreateProductRequest request)
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductRequest request)
         {
             try
             {
@@ -100,14 +100,38 @@ namespace ProductCatalog.Api.Controllers
         /// <summary>
         /// Updates an existing product
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ActionResult<ProductDto>> UpdateProduct([FromBody] ProductDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<ProductDto>> UpdateProduct([FromForm] ProductRequest request)
         {
+            if (request.Id == null)
+            {
+                return BadRequest("Product id is required.");
+            }
             try
             {
-                var updatedProduct = await _productsService.EditProductAsync(dto);
+                var dto = new ProductDto
+                {
+                    Id = request.Id.Value,
+                    Code = request.Code,
+                    Name = request.Name,
+                    Description = request.Description,
+                    Category = request.Category,
+                    Price = request.Price,
+                    IsActive = request.IsActive,
+                    Priority = request.Priority
+                };
+
+                var updatedProduct = await _productsService.EditProductAsync(
+                    dto,
+                    request.Image != null
+                        ? request.Image.OpenReadStream()
+                        : null,
+                    request.Image?.FileName,
+                    request.Image?.ContentType
+                );
 
                 return Ok(updatedProduct);
             }

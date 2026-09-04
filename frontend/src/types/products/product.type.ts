@@ -1,4 +1,4 @@
-import type { ProductCategory, ProductPriority } from "../../constants/enum";
+import type { ProductCategory, ProductPriority } from "@/constants/enum";
 
 export type Product = {
     id: string;
@@ -9,6 +9,7 @@ export type Product = {
     price: number;
     isActive: boolean;
     priority: ProductPriority;
+    imageURL?: string;
 }
 
-export type CreateProduct = Omit<Product, 'id'>;
+export type CreateProduct = Omit<Product, 'id' | 'imageURL'>;

@@ -2,18 +2,30 @@ import { useEffect, useState } from "react";
 import type { Product } from "@/types/products/product.type";
 import type { QueryCondition } from "@/types/query/queryCondition.type";
 import ProductService from "@/api/products.service";
-import { Table } from "antd";
+import { Button, message, Popconfirm, Table } from "antd";
 import FilterBar from "@/components/FilterBar";
 import ProductFilters, {type ProductFilterValues} from "./ProductFilter";
 import type { Filter } from "@/types/query/filter.types";
 import { ProductCategoryLabels } from "@/constants/enum";
 
+import {
+    EditOutlined,
+    EyeOutlined,
+    DeleteOutlined,
+} from '@ant-design/icons';
+
 type ProductTableProps = {
-    refreshKey: number;
+    refreshKey: number
+    onRefresh: () => void
+    onEdit: (product: Product) => void
+    onVisualize: (id: string) => void
 };
 
 export default function ProductTable({
     refreshKey,
+    onRefresh,
+    onEdit,
+    onVisualize,
 }: ProductTableProps) {
 
     const [products, setProducts] = useState<Product[]>([]);
@@ -40,6 +52,19 @@ export default function ProductTable({
         };
         loadProducts();
     }, [query, refreshKey]);
+
+    const handleDelete = async (id: string) => {
+        try {
+            await ProductService.delete([id]);
+
+            message.success('Product deleted successfully');
+
+            onRefresh();
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            message.error('Failed to delete product');
+        }
+    };
     
     const columns = [
         {
@@ -63,8 +88,7 @@ export default function ProductTable({
         {
             key: '4',
             title: 'Category',
-            dataIndex: 'category', 
-            //added
+            dataIndex: 'category',
             sorter: true,
             render: (category: Product["category"]) => (
                 <span>{ProductCategoryLabels[category]}</span>
@@ -83,6 +107,40 @@ export default function ProductTable({
             render:(isActive: boolean)=>{
                 return <p>{isActive?'Available':'Out of Stock'}</p>
             }
+        },
+        {
+            key: 'actions',
+            title: 'Actions',
+            width: 150,
+            align: 'center' as const,
+            render: (_: unknown, product: Product) => (
+                <div className="flex justify-center gap-2">
+                    <Button
+                        shape="circle"
+                        icon={<EditOutlined />}
+                        onClick={() => onEdit(product)}
+                    />
+
+                    <Button
+                        shape="circle"
+                        icon={<EyeOutlined />}
+                        onClick={() => onVisualize(product.id)}
+                    />
+
+                    <Popconfirm
+                        title="Delete product"
+                        description="Are you sure you want to delete this product?"
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={() => handleDelete(product.id)}
+                    >
+                        <Button
+                            danger
+                            icon={<DeleteOutlined />}
+                        />
+                    </Popconfirm>
+                </div>
+            ),
         },
     ]
 

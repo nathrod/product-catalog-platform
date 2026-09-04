@@ -12,6 +12,7 @@ namespace ProductCatalog.Application.Services
     /// 
     /// </summary>
     /// <param name="db"></param>
+    /// <param name="imageStorageService"></param>
     public class ProductService(ISqlSugarClient db, IImageStorageService imageStorageService) : IProductService
     {
         private readonly ISqlSugarClient _db = db;
@@ -140,12 +141,16 @@ namespace ProductCatalog.Application.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ProductDetailsDto> GetProductByIdAsync(Guid id)
+        public async Task<ProductDto> GetProductByIdAsync(Guid id)
         {
-            var prodcutDetails = await _db.Queryable<Product>().InSingleAsync(id);
+            var product = await _db.Queryable<Product>().InSingleAsync(id);
 
-            return prodcutDetails.Adapt<ProductDetailsDto>();
+            if (product == null)
+            {
+                throw new KeyNotFoundException("Product not found!");
+            }
 
+            return product.Adapt<ProductDto>();
         }
 
         /// <summary>
@@ -183,12 +188,30 @@ namespace ProductCatalog.Application.Services
         /// 
         /// </summary>
         /// <param name="dto"></param>
+        /// <param name="imageStream"></param>
+        /// <param name="imageFileName"></param>
+        /// <param name="imageContentType"></param>
         /// <returns></returns>
-        public async Task<ProductDto> EditProductAsync(ProductDto dto)
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<ProductDto> EditProductAsync(ProductDto dto, Stream? imageStream = null, string? imageFileName = null, string? imageContentType = null)
         {
             var productExists = await _db.Queryable<Product>().InSingleAsync(dto.Id) ?? throw new KeyNotFoundException("Product not found!");
 
             dto.Adapt(productExists);
+
+            if (imageStream != null)
+            {
+                var uploadResult =
+                    await _imageStorageService.UploadAsync(
+                        imageStream,
+                        "products",
+                        imageFileName ?? "product-image"
+                    );
+
+                productExists.ImageURL = uploadResult.Url;
+                productExists.ImagePublicId =
+                    uploadResult.PublicId;
+            }
 
             await ValidateRequiredFields(productExists);
 

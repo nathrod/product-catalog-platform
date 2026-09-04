@@ -20,7 +20,7 @@ namespace ProductCatalog.Application.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<ProductDetailsDto> GetProductByIdAsync(Guid id);
+        Task<ProductDto> GetProductByIdAsync(Guid id);
         /// <summary>
         /// 
         /// </summary>
@@ -31,8 +31,11 @@ namespace ProductCatalog.Application.Interfaces
         /// 
         /// </summary>
         /// <param name="dto"></param>
+        /// <param name="imageStream"></param>
+        /// <param name="imageFileName"></param>
+        /// <param name="imageContentType"></param>
         /// <returns></returns>
-        Task<ProductDto> EditProductAsync(ProductDto dto);
+        Task<ProductDto> EditProductAsync(ProductDto dto, Stream? imageStream = null, string? imageFileName = null, string? imageContentType = null);
         /// <summary>
         /// 
         /// </summary>

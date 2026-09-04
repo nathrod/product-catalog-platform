@@ -3,7 +3,6 @@ import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { 
     HomeOutlined, 
     ShoppingOutlined, 
-    AppstoreOutlined,
     ShoppingCartOutlined,
 } from '@ant-design/icons';
 import { Outlet } from 'react-router-dom'
@@ -37,11 +36,6 @@ const MainLayout: React.FC = () => {
                         key: 'products',
                         icon: <ShoppingOutlined />,
                         label: 'Products',
-                    },
-                    {
-                        key: 'categories',
-                        icon: <AppstoreOutlined />,
-                        label: 'Categories',
                     },
                     {
                         key: 'sales',
