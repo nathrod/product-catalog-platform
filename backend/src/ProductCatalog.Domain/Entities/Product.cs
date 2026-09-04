@@ -32,10 +32,10 @@ namespace ProductCatalog.Domain.Entities
         [SugarColumn(IsNullable = false)]
         public ProductPriority Priority { get; set; }
 
-        public string ImageURL { get; set; } = string.Empty;
-
-        public decimal Rating { get; set; }
-
-        public int ReviewCount { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public string? ImageURL { get; set; }
+        
+        [SugarColumn(IsNullable = true)]
+        public string? ImagePublicId { get; set; }
     }
 }

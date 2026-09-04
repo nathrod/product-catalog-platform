@@ -12,5 +12,7 @@ namespace ProductCatalog.Application.DTOs.Product
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
         public ProductPriority Priority { get; set; }
+        public string? ImageURL { get; set; }
+        public string? ImagePublicId { get; set; }
     }
 }

@@ -12,9 +12,11 @@ namespace ProductCatalog.Application.Services
     /// 
     /// </summary>
     /// <param name="db"></param>
-    public class ProductService(ISqlSugarClient db) : IProductService
+    public class ProductService(ISqlSugarClient db, IImageStorageService imageStorageService) : IProductService
     {
         private readonly ISqlSugarClient _db = db;
+        private readonly IImageStorageService _imageStorageService = imageStorageService;
+
         private async Task ValidateRequiredFields(Product product)
         {
             var productCodeExists = await _db.Queryable<Product>().AnyAsync(p => p.Code == product.Code && p.Id != product.Id);
@@ -156,6 +158,19 @@ namespace ProductCatalog.Application.Services
             var newProduct = dto.Adapt<Product>();
             var newId = Guid.NewGuid();
             newProduct.Id = newId;
+
+            if (dto.Image != null)
+            {
+                var uploadResult =
+                    await _imageStorageService.UploadAsync(
+                        dto.Image.ImageStream,
+                        dto.Image.ImageFileName,
+                        dto.Image.ImageContentType
+                    );
+
+                newProduct.ImageURL = uploadResult.Url;
+                newProduct.ImagePublicId = uploadResult.PublicId;
+            }
             
             await ValidateRequiredFields(newProduct);
 

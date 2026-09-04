@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProductCatalog.Api.Models.Products;
 using ProductCatalog.Application.DTOs;
 using ProductCatalog.Application.DTOs.Product;
 using ProductCatalog.Application.DTOs.Query;
@@ -17,7 +18,6 @@ namespace ProductCatalog.Api.Controllers
 
         public ProductsController (IProductService productsService)
         {
-
             _productsService = productsService;
         }
 
@@ -55,19 +55,40 @@ namespace ProductCatalog.Api.Controllers
         /// <summary>
         /// Creates a new product
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] CreateProductDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] CreateProductRequest request)
         {
             try
             {
-                var createProduct = await _productsService.AddProductAsync(dto);
+                var dto = new CreateProductDto
+                {
+                    Code = request.Code,
+                    Name = request.Name,
+                    Description = request.Description,
+                    Category = request.Category,
+                    Price = request.Price,
+                    IsActive = request.IsActive,
+                    Priority = request.Priority,
+                    Image = request.Image != null
+                        ? new ImageFileDto
+                        {
+                            ImageStream = request.Image.OpenReadStream(),
+                            ImageFileName = request.Image.FileName,
+                            ImageContentType = request.Image.ContentType
+                        }
+                        : null
+                };
+
+                var createdProduct =
+                    await _productsService.AddProductAsync(dto);
 
                 return CreatedAtAction(
-                    "GetProductById",
-                    new { id = createProduct.Id },
-                    createProduct
+                    nameof(GetProductById),
+                    new { id = createdProduct.Id },
+                    createdProduct
                 );
             }
             catch(ArgumentException ex)
